@@ -20,7 +20,7 @@ class AuthController {
             if (!errors.isEmpty()) {
                 return res.status(400).json({message: "Помилка при реєстрації", errors})
             }
-            const { login, password } = req.body // дістали з тіла запроса поля login і password
+            const { login, password, name } = req.body // дістали з тіла запроса поля login і password
             const candidate = await User.findOne({ login }) // спробували знайти такого користувача у базі
             // якщо такий користувач вже є - повертаємо помилку
             if (candidate) { 
@@ -29,7 +29,7 @@ class AuthController {
             // створюємо нового користувача
             const hashPassword = bcrypt.hashSync(password, 7) // хешируємо пароль
             const userRole = await Role.findOne({value: "USER"}) // дістаємо роль з таблиці ролей користувачів
-            const user = new User({ login: login, password: hashPassword, roles: [userRole.value] }) // створюємо користувача
+            const user = new User({ login: login.toLowerCase(), password: hashPassword, name: name, roles: [userRole.value] }) // створюємо користувача
             // console.log(user)
             await User.create(user) // додаємо користувача в базу
             return res.json({message: 'Користувач успішно зареєстрований'})

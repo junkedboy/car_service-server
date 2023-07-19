@@ -1,24 +1,24 @@
-import Car from './Car.js'
+import CarUser from './CarUser.js'
 
-class CarController {
+class CarUserController {
     async create(req, res) {
         try {
-            // const car = await Car.create(req.body)
-            // res.json(car)
+            const car = await CarUser.create(req.body)
+            res.json(car)
         } catch (e) {
             res.status(500).json(e.message)
         }
     }
-    async getAll(req, res) {
+    async getAllByUserId(req, res) {
         try {
-            const cars = await Car.find().populate('manufacturer', 'title')
-            // const formattedCars = cars.map(({ _id, manufacturer: { title }, model, __v }) => ({
-            //     _id,
-            //     manufacturer: title,
-            //     model,
-            //     __v
-            // }));
-            return res.json(cars);
+            const UserCars = await CarUser.find({user: req.params.id}).populate({
+                path: 'car',
+                populate: {
+                    path: "manufacturer",
+                    model: "car_manufacturers"
+                }
+            }).exec()
+            return res.json(UserCars);
         } catch (e) {
             res.status(500).json(e.message)
         }
@@ -71,33 +71,4 @@ class CarController {
     }
 }
 
-export default new CarController()
-
-// як я наповнював базу
-
-// файл car_DB.js
-// export const carDB = [
-//     {
-//       "id": 1,
-//       "manufacturer": "Abarth",
-//       "model": "124 Spider"
-//     }
-//      ...
-// ]
-
-// async create(req, res) {
-//     try {
-//         for (const car of carDB) {
-//             const CarManufacturerData = await CarManufacturer.findOne({ title: car.manufacturer })
-//             const newCar = {
-//                 manufacturer: CarManufacturerData._id,
-//                 model: car.model
-//             }
-//             const data = await Car.create(newCar)
-//             console.log("Created new car: " + data)
-//         }
-//         res.status(200).json("All cars created successfully")
-//     } catch (e) {
-//         res.status(500).json(e.message)
-//     }
-// }
+export default new CarUserController()

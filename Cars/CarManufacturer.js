@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const CarManufacturer = new Schema({
-    manufacturer: {type: String, unique: true, required: true},
+    title: {type: String, unique: true, required: true},
 })
 
-export default model('car_manufacturer', CarManufacturer)
+export default model('car_manufacturers', CarManufacturer)
